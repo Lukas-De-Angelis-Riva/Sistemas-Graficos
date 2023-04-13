@@ -399,27 +399,38 @@
 
             *********************************************************************************
             */
+            let pi = Math.PI;
+
+            // sistema tierra: traslada y rota (compensando el spin) sobre el centro
+            msist=mat4.create();
+            mat4.rotateY(msist, msist, 2*pi*tiempo/20);         // 3ro: rotación sobre el sol
+            mat4.translate(msist,msist,[60,0,0]);               // 2do: traslación del centro de la tierra
+            mat4.rotateY(msist, msist, -2*pi*tiempo/20);        // 1ro: compensa el spin
 
             // tierra
-            m1=mat4.create(); 
-            mat4.translate(m1,m1,[60,0,0]);    
-            setTransform(tierra,m1);
+            mtierra=mat4.create();
+            mat4.rotateX(mtierra, msist, 23.5*pi/180);          // 2do: inclinación del eje de la tierra
+            mat4.rotateY(mtierra, mtierra, 2*pi*tiempo/1);      // 1ro: rotación tierra sobre su eje
+            setTransform(tierra, mtierra);
   
             // luna
-            m2=mat4.create();      
-            mat4.translate(m2,m2,[90,0,0]);    
-            setTransform(luna,m2);  
+            mluna=mat4.create();
+            mat4.rotateY(mluna, msist, 2*pi*tiempo/3);          // 2do: rotación sobre la tierra
+            mat4.translate(mluna, mluna, [20, 0, 0]);           // 1ro: traslación a la órbita
+            setTransform(luna,mluna);
 
             // apollo
-            m3=mat4.create();
-            mat4.translate(m3,m3,[110,0,0]); 
-            setTransform(apollo,m3);    
+            mapollo=mat4.create();
+            mat4.translate(mapollo,mluna, [Math.sqrt(2),Math.sqrt(2),0]); // 2do: traslación a la sup. 
+            mat4.rotateZ(mapollo, mapollo, -pi/4);              // 1ro: rotación del apollo 45°
+            setTransform(apollo,mapollo);
 
             // iss
-            m4=mat4.create(); 
-            mat4.translate(m4,m4,[130,0,0]);            
-            setTransform(iss,m4);  
-
+            miss=mat4.create();
+            mat4.rotateX(miss, msist, 2*pi*tiempo/0.5);         // 3ro: rotación sobre la tierra
+            mat4.translate(miss, miss, [0, 10, 0]);             // 2do: traslación a la órbita
+            mat4.rotateX(miss, miss, pi/2);                     // 1ro: rotación de la estación 90°
+            setTransform(iss,miss);
 
             // *********************************************************************************************
 
